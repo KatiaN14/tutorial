@@ -48,7 +48,7 @@ public class ClientController {
      * @param dto datos de la entidad
      */
     @Operation(summary = "Save or Update", description = "Method that saves or updates a Client")
-    @RequestMapping(path = {"","/{id"}, method = RequestMethod.PUT)
+    @RequestMapping(path = {"","/{id}"}, method = RequestMethod.PUT)
     public void save(@PathVariable(name = "id", required = false) Long id, @RequestBody ClientDto dto) {
         this.clientService.save(id, dto);
     }
