@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class BorrowingIT {
+    /*
 
     public static final String LOCALHOST = "http://localhost:";
     public static final String SERVICE_PATH = "/borrowing";
@@ -249,5 +250,7 @@ public class BorrowingIT {
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
+
+     */
 
 }

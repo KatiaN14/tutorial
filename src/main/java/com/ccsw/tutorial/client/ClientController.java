@@ -49,7 +49,7 @@ public class ClientController {
      */
     @Operation(summary = "Save or Update", description = "Method that saves or updates a Client")
     @RequestMapping(path = {"","/{id}"}, method = RequestMethod.PUT)
-    public void save(@PathVariable(name = "id", required = false) Long id, @RequestBody ClientDto dto) {
+    public void save(@PathVariable(name = "id", required = false) Long id, @RequestBody ClientDto dto) throws Exception {
         this.clientService.save(id, dto);
     }
 

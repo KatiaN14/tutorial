@@ -28,6 +28,7 @@ public class ClientIT {
     public static final String NEW_CLIENT_NAME = "CLIENTE5";
     public static final Long MODIFY_CLIENT_ID = 3L;
     public static final Long DELETE_CLIENT_ID = 2L;
+    public static final String EXISTING_CLIENT_NAME = "Pablo";
 
     @LocalServerPort
     private int port;
@@ -102,6 +103,16 @@ public class ClientIT {
     public void deleteWithNotExistsIdShouldInternalError() {
 
         ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH + "/" + NEW_CLIENT_ID, HttpMethod.DELETE, null, Void.class);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    @Test
+    public void saveWithoutIdWithExistingNameShouldInternalError() {
+        ClientDto dto = new ClientDto();
+        dto.setName(EXISTING_CLIENT_NAME);
+
+        ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.PUT, new HttpEntity<>(dto), Void.class);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
