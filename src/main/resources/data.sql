@@ -21,6 +21,8 @@ INSERT INTO client(name) VALUES ('Valeria');
 INSERT INTO client(name) VALUES ('Cristina');
 INSERT INTO client(name) VALUES ('Benjamin');
 
---INSERT INTO borrowings(game_id, client_id, startdate, enddate) VALUES (2,3, 2026-9-01, 2026-9-15);
---INSERT INTO borrowings(game_id, client_id, startdate, enddate) VALUES (4,2, 2026-9-05, 2026-9-20);
---INSERT INTO borrowings(game_id, client_id, startdate, enddate) VALUES (1,3, 2026-9-10, 2026-9-25);
+INSERT INTO borrowing(game_id, client_id, start_date, end_date) VALUES (2,3, '2026-9-01', '2026-9-15');
+INSERT INTO borrowing(game_id, client_id, start_date, end_date) VALUES (4,2, '2026-9-05', '2026-9-20');
+INSERT INTO borrowing(game_id, client_id, start_date, end_date) VALUES (3,3, '2026-9-10', '2026-9-25');
+INSERT INTO borrowing(game_id, client_id, start_date, end_date) VALUES (1,1, '2026-9-10', '2026-9-25');
+INSERT INTO borrowing(game_id, client_id, start_date, end_date) VALUES (5,1, '2026-9-10', '2026-9-25');
