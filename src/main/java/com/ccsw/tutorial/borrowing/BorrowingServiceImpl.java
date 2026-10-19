@@ -4,8 +4,11 @@ import com.ccsw.tutorial.borrowing.model.Borrowing;
 import com.ccsw.tutorial.borrowing.model.BorrowingDto;
 import com.ccsw.tutorial.borrowing.model.BorrowingSearchDto;
 import com.ccsw.tutorial.client.ClientRepository;
+import com.ccsw.tutorial.client.ClientService;
+import com.ccsw.tutorial.client.model.Client;
 import com.ccsw.tutorial.common.criteria.SearchCriteria;
 import com.ccsw.tutorial.game.GameRepository;
+import com.ccsw.tutorial.game.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,12 @@ public class BorrowingServiceImpl implements BorrowingService {
 
     @Autowired
     ClientRepository clientRepository;
+
+    @Autowired
+    GameService gameService;
+
+    @Autowired
+    ClientService clientService;
 
     /**
      * {@inheritDoc}
@@ -60,9 +69,29 @@ public class BorrowingServiceImpl implements BorrowingService {
      * {@inheritDoc}
      */
     @Override
-    public void save(BorrowingDto data) throws Exception {
+    public void save(BorrowingDto dto) throws Exception {
+        List<Borrowing> allBorrowings = this.findAll();
+        int max = 2;
+        for (Borrowing b : allBorrowings ) {
+            if(b.getGame().equals(dto.getGame())) {
+                if ((b.getStartDate().greaterThanOrEqualTo(dto.getStartDate()) && b.getStartDate().lessThanOrEqualTo(dto.getEndDate())) || (b.getEndDate().greaterThanOrEqualTo(dto.getStartDate()) && b.getEndDate().lessThanOrEqualTo(dto.getEndDate()))) {
+                    throw new Exception("El juego ya está prestado en estas fechas");
+                }
+            }
+            if(b.getClient().equals(dto.getClient())) {
+                if ((b.getStartDate().greaterThanOrEqualTo(dto.getStartDate()) && b.getStartDate().lessThanOrEqualTo(dto.getEndDate())) || (b.getEndDate().greaterThanOrEqualTo(dto.getStartDate()) && b.getEndDate().lessThanOrEqualTo(dto.getEndDate()))) {
+                    max--;
+                    if(max == 0) {
+                        throw new Exception("El usuario ya tiene dos juegos prestados en el intervalo temporal elegido");
+                    }
+                }
+            }
+        }
         Borrowing borrowing = new Borrowing();
-
+        borrowing.setClient(clientService.get(dto.getClient().getId()));
+        borrowing.setGame(gameService.get(dto.getGame().getId()));
+        borrowing.setStartDate(dto.getStartDate());
+        borrowing.setEndDate(dto.getEndDate());
         this.borrowingRepository.save(borrowing);
     }
 
