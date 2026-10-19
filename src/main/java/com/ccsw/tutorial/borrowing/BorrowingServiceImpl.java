@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 /**
@@ -70,23 +71,24 @@ public class BorrowingServiceImpl implements BorrowingService {
      */
     @Override
     public void save(BorrowingDto dto) throws Exception {
-        List<Borrowing> allBorrowings = this.findAll();
-        int max = 2;
-        for (Borrowing b : allBorrowings ) {
-            if(b.getGame().equals(dto.getGame())) {
-                if ((b.getStartDate().greaterThanOrEqualTo(dto.getStartDate()) && b.getStartDate().lessThanOrEqualTo(dto.getEndDate())) || (b.getEndDate().greaterThanOrEqualTo(dto.getStartDate()) && b.getEndDate().lessThanOrEqualTo(dto.getEndDate()))) {
-                    throw new Exception("El juego ya está prestado en estas fechas");
-                }
-            }
-            if(b.getClient().equals(dto.getClient())) {
-                if ((b.getStartDate().greaterThanOrEqualTo(dto.getStartDate()) && b.getStartDate().lessThanOrEqualTo(dto.getEndDate())) || (b.getEndDate().greaterThanOrEqualTo(dto.getStartDate()) && b.getEndDate().lessThanOrEqualTo(dto.getEndDate()))) {
-                    max--;
-                    if(max == 0) {
-                        throw new Exception("El usuario ya tiene dos juegos prestados en el intervalo temporal elegido");
-                    }
-                }
-            }
+        Long gameId = dto.getGame().getId();
+        Long clientId = dto.getClient().getId();
+        Long days = ChronoUnit.DAYS.between(dto.getStartDate(), dto.getEndDate());
+        if (days >= 14) {
+            throw new Exception("El préstamo no puede superar los 14 días");
         }
+        if (dto.getEndDate().isBefore(dto.getStartDate())) {
+            throw new Exception("La fecha del inicio no puede ser posterior a la de fin");
+        }
+
+        if(this.borrowingRepository.existsByGameIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(gameId, dto.getEndDate(), dto.getStartDate())) {
+            throw new Exception("El juego ya está prestado en estas fechas");
+        }
+
+        if(this.borrowingRepository.countByClientIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(clientId, dto.getEndDate(), dto.getStartDate()) >= 2) {
+            throw new Exception ("El cliente ya tiene dos juegos prestados durante las fechas elegidas");
+        }
+
         Borrowing borrowing = new Borrowing();
         borrowing.setClient(clientService.get(dto.getClient().getId()));
         borrowing.setGame(gameService.get(dto.getGame().getId()));

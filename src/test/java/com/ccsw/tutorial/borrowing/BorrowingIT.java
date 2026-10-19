@@ -38,6 +38,7 @@ public class BorrowingIT {
     public static final LocalDate EXISTING_DATE = LocalDate.of(2026, 9, 15);
     public static final LocalDate START_DATE = LocalDate.of(2026, 9, 12);
     public static final LocalDate END_DATE = LocalDate.of(2026, 9, 24);
+    public static final LocalDate WRONG_END_DATE = LocalDate.of(2025, 9, 12);
     public static final Long NOT_EXISTS_GAME = 8L;
     public static final Long NOT_EXISTS_CLIENT = 8L;
     public static final LocalDate NOT_EXISTS_DATE = LocalDate.of(2030,5,10);
@@ -346,9 +347,20 @@ public class BorrowingIT {
         ResponseEntity<ResponsePage<BorrowingDto>> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST, new HttpEntity<>(searchDto), responseTypePage);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
 
+    @Test
+    public saveBorrowingWhenMoreThanFourteenDaysShouldInternalError() {
+        BorrowingDto dto = new BorrowingDto();
+        dto.setStartDate(START_DATE);
+        dto.setEndDate(WRONG_END_DATE);
 
+        BorrowingSearchDto searchDto = new BorrowingSearchDto();
+        searchDto.setPageable(new PageableRequest(0, (int) TOTAL_BORROWINGS));
 
+        ResponseEntity<ResponsePage<BorrowingDto>> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST, new HttpEntity<>(searchDto), responseTypePage);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
 }
