@@ -31,11 +31,11 @@ public interface BorrowingService {
     Page<Borrowing> findPage(BorrowingSearchDto dto, Long idGame, Long idClient, LocalDate date);
 
     /**
-     * Método para crear un {@link Borrowing} según las restricciones datas - un usuario no puede tener más de dos juegos a la vez prestados
+     * Método para crear o modificar un {@link Borrowing} según las restricciones datas - un usuario no puede tener más de dos juegos a la vez prestados
      *
      * @param dto datos de la entidad
      */
-    void save(BorrowingDto dto) throws Exception;
+    void save(Long id, BorrowingDto dto) throws Exception;
 
     /**
      * Método para eliminar un {@link Borrowing}

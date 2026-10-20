@@ -350,7 +350,7 @@ public class BorrowingIT {
     }
 
     @Test
-    public saveBorrowingWhenMoreThanFourteenDaysShouldInternalError() {
+    public void saveBorrowingWhenMoreThanFourteenDaysShouldInternalError() {
         BorrowingDto dto = new BorrowingDto();
         dto.setStartDate(START_DATE);
         dto.setEndDate(WRONG_END_DATE);

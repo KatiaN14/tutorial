@@ -70,7 +70,7 @@ public class BorrowingServiceImpl implements BorrowingService {
      * {@inheritDoc}
      */
     @Override
-    public void save(BorrowingDto dto) throws Exception {
+    public void save(Long id, BorrowingDto dto) throws Exception {
         Long gameId = dto.getGame().getId();
         Long clientId = dto.getClient().getId();
         Long days = ChronoUnit.DAYS.between(dto.getStartDate(), dto.getEndDate());
