@@ -59,7 +59,7 @@ public class BorrowingController {
      * @param dto datos de la entidad
      */
     @Operation(summary = "Save or Update", description = "Method that saves or updates a Borrowing")
-    @RequestMapping(path = {"/{id}"}, method = RequestMethod.PUT)
+    @RequestMapping(path = {"","/{id}"}, method = RequestMethod.PUT)
     public void save(@PathVariable(name = "id", required = false) Long id, @RequestBody BorrowingDto dto) throws Exception {
         this.borrowingService.save(id, dto);
     }

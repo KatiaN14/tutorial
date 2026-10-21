@@ -14,8 +14,8 @@ import java.time.LocalDate;
  */
 public interface BorrowingRepository extends CrudRepository<Borrowing, Long>, JpaSpecificationExecutor<Borrowing> {
 
-    boolean existsByGameIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(Long gameId, LocalDate endDate, LocalDate startDate);
-    long countByClientIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(Long clientId, LocalDate endDate, LocalDate startDate);
+    boolean existsByGameIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualAndIdNot(Long gameId, LocalDate endDate, LocalDate startDate, Long id);
+    long countByClientIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualAndIdNot(Long clientId, LocalDate endDate, LocalDate startDate, Long id);
 
     /**
      * Método para recuperar un listado paginado de {@link Borrowing}

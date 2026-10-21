@@ -17,7 +17,10 @@ public class BorrowingSpecification implements Specification<Borrowing> {
 
     @Override
     public Predicate toPredicate(Root<Borrowing> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
-        if(criteria.getValue() != null) {
+        if(criteria.getValue() == null) {
+            return null;
+        }
+        if(criteria.getOperation().equalsIgnoreCase(":")) {
             Path<String> path = getPath(root);
             return builder.equal(path, criteria.getValue());
         } else if (criteria.getOperation().equalsIgnoreCase("<=")) {

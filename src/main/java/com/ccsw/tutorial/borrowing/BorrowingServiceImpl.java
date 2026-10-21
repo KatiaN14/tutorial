@@ -9,6 +9,7 @@ import com.ccsw.tutorial.client.model.Client;
 import com.ccsw.tutorial.common.criteria.SearchCriteria;
 import com.ccsw.tutorial.game.GameRepository;
 import com.ccsw.tutorial.game.GameService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -71,6 +72,8 @@ public class BorrowingServiceImpl implements BorrowingService {
      */
     @Override
     public void save(Long id, BorrowingDto dto) throws Exception {
+        Borrowing borrowing;
+        Long borrowingId = id != null ? id : -1L;
         Long gameId = dto.getGame().getId();
         Long clientId = dto.getClient().getId();
         Long days = ChronoUnit.DAYS.between(dto.getStartDate(), dto.getEndDate());
@@ -81,19 +84,24 @@ public class BorrowingServiceImpl implements BorrowingService {
             throw new Exception("La fecha del inicio no puede ser posterior a la de fin");
         }
 
-        if(this.borrowingRepository.existsByGameIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(gameId, dto.getEndDate(), dto.getStartDate())) {
+        if(this.borrowingRepository.existsByGameIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualAndIdNot(gameId, dto.getEndDate(), dto.getStartDate(), borrowingId)) {
             throw new Exception("El juego ya está prestado en estas fechas");
         }
 
-        if(this.borrowingRepository.countByClientIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(clientId, dto.getEndDate(), dto.getStartDate()) >= 2) {
+        if(this.borrowingRepository.countByClientIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualAndIdNot(clientId, dto.getEndDate(), dto.getStartDate(), borrowingId) >= 2) {
             throw new Exception ("El cliente ya tiene dos juegos prestados durante las fechas elegidas");
         }
+        if (id  == null) {
+            borrowing = new Borrowing();
+        } else {
+            borrowing = this.borrowingRepository.findById(id).orElse(null);
+        }
 
-        Borrowing borrowing = new Borrowing();
-        borrowing.setClient(clientService.get(dto.getClient().getId()));
+        BeanUtils.copyProperties(dto, borrowing, "id", "game", "client");
+
         borrowing.setGame(gameService.get(dto.getGame().getId()));
-        borrowing.setStartDate(dto.getStartDate());
-        borrowing.setEndDate(dto.getEndDate());
+        borrowing.setClient(clientService.get(dto.getClient().getId()));
+
         this.borrowingRepository.save(borrowing);
     }
 
