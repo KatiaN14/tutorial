@@ -32,25 +32,26 @@ public class BorrowingIT {
     public static final String LOCALHOST = "http://localhost:";
     public static final String SERVICE_PATH = "/borrowing";
 
-    public static final Long DELETE_BORROWING_ID = 2L;
-    public static final Long EXISTING_GAME_ID = 2L;
-    public static final Long EXISTING_CLIENT_ID = 1L;
-    public static final LocalDate EXISTING_DATE = LocalDate.of(2026, 9, 15);
+    public static final Long EXISTING_GAME_ID = 1L; //it is also the game that is borrowed in the time period between start_date and end_date
+    public static final Long EXISTING_CLIENT_ID = 1L; //it is also the client that has two borrowings already in the period between start_date and end_date
+    public static final LocalDate EXISTING_DATE = LocalDate.of(2026,9,16);
     public static final LocalDate START_DATE = LocalDate.of(2026, 9, 12);
     public static final LocalDate END_DATE = LocalDate.of(2026, 9, 24);
-    public static final LocalDate WRONG_END_DATE = LocalDate.of(2025, 9, 12);
+    public static final LocalDate WRONG_END_DATE_1 = LocalDate.of(2025, 9, 10); //end date before start date
+    public static final LocalDate WRONG_END_DATE_2 = LocalDate.of(2026, 12, 20); //end date more than 14 days after start date
     public static final Long NOT_EXISTS_GAME = 8L;
     public static final Long NOT_EXISTS_CLIENT = 8L;
-    public static final LocalDate NOT_EXISTS_DATE = LocalDate.of(2030,5,10);
+    public static final LocalDate NOT_EXISTS_DATE = LocalDate.of(2030,5,10); //date when there are no borrowings
+    public static final Long FREE_GAME_ID = 2L;
+    public static final Long FREE_CLIENT_ID = 4L;
+    public static final Long DELETE_BORROWING_ID = 1L;
 
-    private static final int TOTAL_BORROWINGS = 5;
-    private static final int PAGE_SIZE = 3;
+    private static final int TOTAL_BORROWINGS = 6;
+    private static final int PAGE_SIZE = 5;
 
     private static final String GAME_PARAM = "game";
     private static final String CLIENT_PARAM = "client";
     private static final String DATE_PARAM = "date";
-
-    ParameterizedTypeReference<List<BorrowingDto>> responseTypeList = new ParameterizedTypeReference<List<BorrowingDto>>(){};
 
     @LocalServerPort
     private int port;
@@ -71,7 +72,7 @@ public class BorrowingIT {
     }
 
     @Test
-    public void findFirstPageWithThreeSizeShouldReturnFirstThreeResults() {
+    public void findFirstPageWithFiveSizeShouldReturnFirstFiveResults() {
 
         BorrowingSearchDto searchDto = new BorrowingSearchDto();
         searchDto.setPageable(new PageableRequest(0, PAGE_SIZE));
@@ -84,7 +85,7 @@ public class BorrowingIT {
     }
 
     @Test
-    public void findSecondPageWithThreeSizeShouldReturnLastTwoResults() {
+    public void findSecondPageWithFiveSizeShouldReturnLastOneResult() {
         int elementsCount = TOTAL_BORROWINGS - PAGE_SIZE;
 
         BorrowingSearchDto searchDto = new BorrowingSearchDto();
@@ -102,12 +103,12 @@ public class BorrowingIT {
         long newBorrowingId = TOTAL_BORROWINGS + 1;
         long newBorrowingSize = TOTAL_BORROWINGS + 1;
 
-        BorrowingDto dto = new BorrowingDto();
         GameDto gameDto = new GameDto();
-        gameDto.setId(NOT_EXISTS_GAME);
+        gameDto.setId(FREE_GAME_ID);
         ClientDto clientDto = new ClientDto();
-        clientDto.setId(NOT_EXISTS_CLIENT);
+        clientDto.setId(FREE_CLIENT_ID);
 
+        BorrowingDto dto = new BorrowingDto();
         dto.setClient(clientDto);
         dto.setGame(gameDto);
         dto.setStartDate(START_DATE);
@@ -125,8 +126,10 @@ public class BorrowingIT {
 
         BorrowingDto borrowing = response.getBody().getContent().stream().filter(item -> item.getId().equals(newBorrowingId)).findFirst().orElse(null);
         assertNotNull(borrowing);
-        assertEquals(gameDto, borrowing.getGame());
-        assertEquals(clientDto, borrowing.getClient());
+        assertEquals(FREE_GAME_ID, borrowing.getGame().getId());
+        assertEquals(FREE_CLIENT_ID, borrowing.getClient().getId());
+        assertEquals(START_DATE, borrowing.getStartDate());
+        assertEquals(END_DATE, borrowing.getEndDate());
     }
 
     @Test
@@ -198,7 +201,7 @@ public class BorrowingIT {
 
     @Test
     public void findExistsDateShouldReturnBorrowings() {
-        int BORROWINGS_FILTER = 3;
+        int BORROWINGS_FILTER = 4;
 
         Map<String, Object> params = new HashMap<>();
         params.put(GAME_PARAM, null);
@@ -212,8 +215,8 @@ public class BorrowingIT {
     }
 
     @Test
-    public void findExistsGameAndClientShouldReturnGames() {
-        int BORROWINGS_FILTER = 1;
+    public void findExistsGameAndClientShouldReturnBorrowings() {
+        int BORROWINGS_FILTER = 2;
 
         Map<String, Object> params = new HashMap<>();
         params.put(GAME_PARAM, EXISTING_GAME_ID);
@@ -227,8 +230,8 @@ public class BorrowingIT {
     }
 
     @Test
-    public void findExistsGameAndDateShouldReturnGames() {
-        int BORROWINGS_FILTER = 2;
+    public void findExistsGameAndDateShouldReturnBorrowing() {
+        int BORROWINGS_FILTER = 1;
 
         Map<String, Object> params = new HashMap<>();
         params.put(GAME_PARAM, EXISTING_GAME_ID);
@@ -242,8 +245,8 @@ public class BorrowingIT {
     }
 
     @Test
-    public void findExistsDateAndClientShouldReturnGames() {
-        int BORROWINGS_FILTER = 1;
+    public void findExistsDateAndClientShouldReturnBorrowings() {
+        int BORROWINGS_FILTER = 2;
 
         Map<String, Object> params = new HashMap<>();
         params.put(GAME_PARAM, null);
@@ -257,7 +260,7 @@ public class BorrowingIT {
     }
 
     @Test
-    public void findExistsGameAndClientAndDateShouldReturnGames() {
+    public void findExistsGameAndClientAndDateShouldReturnBorrowing() {
         int BORROWINGS_FILTER = 1;
 
         Map<String, Object> params = new HashMap<>();
@@ -317,48 +320,73 @@ public class BorrowingIT {
     }
 
     @Test
-    public void saveBorrowingWhenClientReachedLimitShouldInternalError() {
+    public void saveBorrowingWhenClientReachedLimitShouldThrowException() {
         ClientDto client = new ClientDto();
+        client.setId(EXISTING_CLIENT_ID);
+        GameDto game = new GameDto();
+        game.setId(FREE_GAME_ID);
+
         BorrowingDto dto = new BorrowingDto();
         dto.setClient(client);
-        dto.setStartDate(START_DATE);
-        dto.setEndDate(END_DATE);
-
-        BorrowingSearchDto searchDto = new BorrowingSearchDto();
-        searchDto.setPageable(new PageableRequest(0, (int) TOTAL_BORROWINGS));
-
-        ResponseEntity<ResponsePage<BorrowingDto>> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST, new HttpEntity<>(searchDto), responseTypePage);
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-    }
-
-    @Test
-    public void saveBorrowingWhenGameBorrowedShouldInternalError() {
-        BorrowingDto dto = new BorrowingDto();
-        GameDto game = new GameDto();
         dto.setGame(game);
-        //borrow it to client 1 and then try to borrow it to client in the middle of the borrowing period?
         dto.setStartDate(START_DATE);
         dto.setEndDate(END_DATE);
 
-        BorrowingSearchDto searchDto = new BorrowingSearchDto();
-        searchDto.setPageable(new PageableRequest(0, (int) TOTAL_BORROWINGS));
-
-        ResponseEntity<ResponsePage<BorrowingDto>> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST, new HttpEntity<>(searchDto), responseTypePage);
+        ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.PUT, new HttpEntity<>(dto), Void.class);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     @Test
-    public void saveBorrowingWhenMoreThanFourteenDaysShouldInternalError() {
+    public void saveBorrowingWhenGameBorrowedShouldThrowException() {
+        ClientDto client = new ClientDto();
+        client.setId(FREE_CLIENT_ID);
+        GameDto game = new GameDto();
+        game.setId(EXISTING_GAME_ID);
+
         BorrowingDto dto = new BorrowingDto();
+        dto.setClient(client);
+        dto.setGame(game);
         dto.setStartDate(START_DATE);
-        dto.setEndDate(WRONG_END_DATE);
+        dto.setEndDate(END_DATE);
 
-        BorrowingSearchDto searchDto = new BorrowingSearchDto();
-        searchDto.setPageable(new PageableRequest(0, (int) TOTAL_BORROWINGS));
+        ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.PUT, new HttpEntity<>(dto), Void.class);
 
-        ResponseEntity<ResponsePage<BorrowingDto>> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.POST, new HttpEntity<>(searchDto), responseTypePage);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    @Test
+    public void saveBorrowingWhenMoreThanFourteenDaysShouldThrowException() {
+        ClientDto client = new ClientDto();
+        client.setId(FREE_CLIENT_ID);
+        GameDto game = new GameDto();
+        game.setId(FREE_GAME_ID);
+
+        BorrowingDto dto = new BorrowingDto();
+        dto.setClient(client);
+        dto.setGame(game);
+        dto.setStartDate(START_DATE);
+        dto.setEndDate(WRONG_END_DATE_2);
+
+        ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.PUT, new HttpEntity<>(dto), Void.class);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    @Test
+    public void saveBorrowingWhenEndDateBeforeStartDateShouldThrowException(){
+        ClientDto client = new ClientDto();
+        client.setId(FREE_CLIENT_ID);
+        GameDto game = new GameDto();
+        game.setId(FREE_GAME_ID);
+
+        BorrowingDto dto = new BorrowingDto();
+        dto.setClient(client);
+        dto.setGame(game);
+        dto.setStartDate(START_DATE);
+        dto.setEndDate(WRONG_END_DATE_1);
+
+        ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.PUT, new HttpEntity<>(dto), Void.class);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }

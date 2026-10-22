@@ -27,7 +27,7 @@ public class ClientIT {
     public static final Long NEW_CLIENT_ID = 5L;
     public static final String NEW_CLIENT_NAME = "CLIENTE5";
     public static final Long MODIFY_CLIENT_ID = 3L;
-    public static final Long DELETE_CLIENT_ID = 2L;
+    public static final Long DELETE_CLIENT_ID = 4L;
     public static final String EXISTING_CLIENT_NAME = "Pablo";
 
     @LocalServerPort
@@ -79,7 +79,7 @@ public class ClientIT {
     }
 
     @Test
-    public void modifyWithNotExistIdShouldInternalError() {
+    public void modifyWithNotExistIdShouldThrowException() {
 
         ClientDto dto = new ClientDto();
         dto.setName(NEW_CLIENT_NAME);
@@ -100,7 +100,7 @@ public class ClientIT {
     }
 
     @Test
-    public void deleteWithNotExistsIdShouldInternalError() {
+    public void deleteWithNotExistsIdShouldThrowException() {
 
         ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH + "/" + NEW_CLIENT_ID, HttpMethod.DELETE, null, Void.class);
 
@@ -108,7 +108,7 @@ public class ClientIT {
     }
 
     @Test
-    public void saveWithoutIdWithExistingNameShouldInternalError() {
+    public void saveWithoutIdWithExistingNameShouldThrowException() {
         ClientDto dto = new ClientDto();
         dto.setName(EXISTING_CLIENT_NAME);
 

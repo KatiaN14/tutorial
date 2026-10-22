@@ -85,7 +85,7 @@ public class CategoryIT {
     }
 
     @Test
-    public void modifyWithNotExistIdShouldInternalError() {
+    public void modifyWithNotExistIdShouldThrowException() {
 
         CategoryDto dto = new CategoryDto();
         dto.setName(NEW_CATEGORY_NAME);
@@ -106,7 +106,7 @@ public class CategoryIT {
     }
 
     @Test
-    public void deleteWithNotExistsIdShouldInternalError() {
+    public void deleteWithNotExistsIdShouldThrowException() {
 
         ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH + "/" + NEW_CATEGORY_ID, HttpMethod.DELETE, null, Void.class);
 
