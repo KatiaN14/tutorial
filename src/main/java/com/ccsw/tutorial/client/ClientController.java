@@ -1,7 +1,5 @@
 package com.ccsw.tutorial.client;
 
-import com.ccsw.tutorial.client.model.Client;
-import com.ccsw.tutorial.client.model.ClientDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
@@ -10,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.ccsw.tutorial.client.model.Client;
+import com.ccsw.tutorial.client.model.ClientDto;
 
 /**
  * @author KatiaN14

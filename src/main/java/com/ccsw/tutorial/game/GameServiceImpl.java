@@ -1,18 +1,18 @@
 package com.ccsw.tutorial.game;
 
-import com.ccsw.tutorial.author.AuthorService;
-import com.ccsw.tutorial.category.CategoryService;
-import com.ccsw.tutorial.common.criteria.SearchCriteria;
-import com.ccsw.tutorial.game.model.Game;
-import com.ccsw.tutorial.game.model.GameDto;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-
 import java.util.List;
+
+import com.ccsw.tutorial.author.AuthorService;
+import com.ccsw.tutorial.category.CategoryService;
+import com.ccsw.tutorial.common.criteria.SearchCriteria;
+import com.ccsw.tutorial.game.model.Game;
+import com.ccsw.tutorial.game.model.GameDto;
 
 /**
  * @author ccsw
@@ -74,4 +74,19 @@ public class GameServiceImpl implements GameService {
     @Override
     public Game get(Long id) {return this.gameRepository.findById(id).orElse(null);}
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean existsCategory(Long categoryId) {
+        return this.gameRepository.existsByCategoryId(categoryId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean existsAuthor(Long authorId) {
+        return this.gameRepository.existsByAuthorId(authorId);
+    }
 }

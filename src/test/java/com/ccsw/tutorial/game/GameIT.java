@@ -1,8 +1,5 @@
 package com.ccsw.tutorial.game;
 
-import com.ccsw.tutorial.author.model.AuthorDto;
-import com.ccsw.tutorial.category.model.CategoryDto;
-import com.ccsw.tutorial.game.model.GameDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +19,10 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import com.ccsw.tutorial.author.model.AuthorDto;
+import com.ccsw.tutorial.category.model.CategoryDto;
+import com.ccsw.tutorial.game.model.GameDto;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)

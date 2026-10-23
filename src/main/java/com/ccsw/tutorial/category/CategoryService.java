@@ -1,9 +1,9 @@
 package com.ccsw.tutorial.category;
 
+import java.util.List;
+
 import com.ccsw.tutorial.category.model.Category;
 import com.ccsw.tutorial.category.model.CategoryDto;
-
-import java.util.List;
 
 /**
  * @author ccsw

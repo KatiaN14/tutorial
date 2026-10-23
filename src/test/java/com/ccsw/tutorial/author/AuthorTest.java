@@ -1,6 +1,5 @@
 package com.ccsw.tutorial.author;
 
-import com.ccsw.tutorial.author.model.Author;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,6 +11,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import com.ccsw.tutorial.author.model.Author;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthorTest {

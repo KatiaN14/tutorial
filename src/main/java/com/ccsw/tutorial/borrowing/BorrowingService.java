@@ -1,12 +1,13 @@
 package com.ccsw.tutorial.borrowing;
 
-import com.ccsw.tutorial.borrowing.model.Borrowing;
-import com.ccsw.tutorial.borrowing.model.BorrowingDto;
-import com.ccsw.tutorial.borrowing.model.BorrowingSearchDto;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import com.ccsw.tutorial.borrowing.model.Borrowing;
+import com.ccsw.tutorial.borrowing.model.BorrowingDto;
+import com.ccsw.tutorial.borrowing.model.BorrowingSearchDto;
 
 /**
  * @author KatiaN14
@@ -50,4 +51,11 @@ public interface BorrowingService {
      * @return {@link List} de {@link Borrowing}
      */
     List<Borrowing> findAll();
+
+    /**
+     * Avisa si el cliente tiene un préstamo
+     *
+     * @return True si el cliente tiene algún préstamo
+     */
+    boolean existsClient(Long clientId);
 }

@@ -1,7 +1,5 @@
 package com.ccsw.tutorial.category;
 
-import com.ccsw.tutorial.category.model.Category;
-import com.ccsw.tutorial.category.model.CategoryDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
@@ -10,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.ccsw.tutorial.category.model.Category;
+import com.ccsw.tutorial.category.model.CategoryDto;
 
 /**
  * @author ccsw

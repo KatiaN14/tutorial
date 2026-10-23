@@ -1,9 +1,9 @@
 package com.ccsw.tutorial.borrowing.model;
 
+import java.time.LocalDate;
+
 import com.ccsw.tutorial.game.model.GameDto;
 import com.ccsw.tutorial.client.model.ClientDto;
-
-import java.time.LocalDate;
 
 /**
  * @author KatiaN14

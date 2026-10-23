@@ -1,7 +1,8 @@
 package com.ccsw.tutorial.client;
 
-import com.ccsw.tutorial.client.model.Client;
 import org.springframework.data.repository.CrudRepository;
+
+import com.ccsw.tutorial.client.model.Client;
 
 /**
  * @author KatiaN14

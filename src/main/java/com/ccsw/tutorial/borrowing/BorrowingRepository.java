@@ -1,12 +1,13 @@
 package com.ccsw.tutorial.borrowing;
 
-import com.ccsw.tutorial.borrowing.model.Borrowing;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 
 import java.time.LocalDate;
+
+import com.ccsw.tutorial.borrowing.model.Borrowing;
 
 /**
  * @author KatiaN14
@@ -24,4 +25,12 @@ public interface BorrowingRepository extends CrudRepository<Borrowing, Long>, Jp
      * @return {@link Page} de {@link Borrowing}
      */
     Page<Borrowing> findAll(Pageable pageable);
+
+    /**
+     * Método para saber si el cliente con el id tiene algún préstamo
+     *
+     * @param clientId
+     * @return boolean
+     */
+    boolean existsByClientId(Long clientId);
 }

@@ -1,12 +1,5 @@
 package com.ccsw.tutorial.borrowing;
 
-import com.ccsw.tutorial.borrowing.model.BorrowingDto;
-import com.ccsw.tutorial.borrowing.model.BorrowingSearchDto;
-import com.ccsw.tutorial.client.model.Client;
-import com.ccsw.tutorial.client.model.ClientDto;
-import com.ccsw.tutorial.common.pagination.PageableRequest;
-import com.ccsw.tutorial.config.ResponsePage;
-import com.ccsw.tutorial.game.model.GameDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +17,13 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import com.ccsw.tutorial.borrowing.model.BorrowingDto;
+import com.ccsw.tutorial.borrowing.model.BorrowingSearchDto;
+import com.ccsw.tutorial.client.model.ClientDto;
+import com.ccsw.tutorial.common.pagination.PageableRequest;
+import com.ccsw.tutorial.config.ResponsePage;
+import com.ccsw.tutorial.game.model.GameDto;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -48,9 +48,10 @@ public class BorrowingIT {
 
     private static final int TOTAL_BORROWINGS = 6;
     private static final int PAGE_SIZE = 5;
+    private static final int PAGE_SIZE_10 = 10;
 
-    private static final String GAME_PARAM = "game";
-    private static final String CLIENT_PARAM = "client";
+    private static final String GAME_PARAM = "idGame";
+    private static final String CLIENT_PARAM = "idClient";
     private static final String DATE_PARAM = "date";
 
     @LocalServerPort
@@ -158,45 +159,53 @@ public class BorrowingIT {
 
     @Test
     public void findWithoutFiltersShouldReturnAllBorrowings() {
+        BorrowingSearchDto searchDto = new BorrowingSearchDto();
+        searchDto.setPageable(new PageableRequest(0,PAGE_SIZE_10));
+
         Map<String, Object> params = new HashMap<>();
         params.put(GAME_PARAM, null);
         params.put(CLIENT_PARAM, null);
         params.put(DATE_PARAM, null);
 
-        ResponseEntity<List<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        ResponseEntity<ResponsePage<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(searchDto), responseTypePage, params);
 
         assertNotNull(response);
-        assertEquals(TOTAL_BORROWINGS, response.getBody().size());
+        assertEquals(TOTAL_BORROWINGS, response.getBody().getContent().size());
     }
 
     @Test
     public void findExistsGameShouldReturnBorrowings() {
-        int BORROWINGS_FILTER = 2;
+        int BORROWINGS_FILTER = 2; //int elementsCount = TOTAL_BORROWINGS - PAGE_SIZE;
 
         Map<String, Object> params = new HashMap<>();
+        BorrowingSearchDto searchDto = new BorrowingSearchDto();
+        searchDto.setPageable(new PageableRequest(0,PAGE_SIZE));
         params.put(GAME_PARAM, EXISTING_GAME_ID);
         params.put(CLIENT_PARAM, null);
         params.put(DATE_PARAM, null);
 
-        ResponseEntity<List<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        ResponseEntity<ResponsePage<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(searchDto), responseTypePage, params);
 
         assertNotNull(response);
-        assertEquals(BORROWINGS_FILTER, response.getBody().size());
+        assertEquals(BORROWINGS_FILTER, response.getBody().getContent().size());
     }
 
     @Test
     public void findExistsClientShouldReturnBorrowings() {
-        int BORROWINGS_FILTER = 2;
+        int BORROWINGS_FILTER = 3;
 
         Map<String, Object> params = new HashMap<>();
         params.put(GAME_PARAM, null);
         params.put(CLIENT_PARAM, EXISTING_CLIENT_ID);
         params.put(DATE_PARAM, null);
 
-        ResponseEntity<List<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        BorrowingSearchDto searchDto = new BorrowingSearchDto();
+        searchDto.setPageable(new PageableRequest(0,PAGE_SIZE));
+
+        ResponseEntity<ResponsePage<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(searchDto), responseTypePage, params);
 
         assertNotNull(response);
-        assertEquals(BORROWINGS_FILTER, response.getBody().size());
+        assertEquals(BORROWINGS_FILTER, response.getBody().getContent().size());
     }
 
     @Test
@@ -208,10 +217,13 @@ public class BorrowingIT {
         params.put(CLIENT_PARAM, null);
         params.put(DATE_PARAM, EXISTING_DATE);
 
-        ResponseEntity<List<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        BorrowingSearchDto searchDto = new BorrowingSearchDto();
+        searchDto.setPageable(new PageableRequest(0,PAGE_SIZE));
+
+        ResponseEntity<ResponsePage<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(searchDto), responseTypePage, params);
 
         assertNotNull(response);
-        assertEquals(BORROWINGS_FILTER, response.getBody().size());
+        assertEquals(BORROWINGS_FILTER, response.getBody().getContent().size());
     }
 
     @Test
@@ -223,10 +235,13 @@ public class BorrowingIT {
         params.put(CLIENT_PARAM, EXISTING_CLIENT_ID);
         params.put(DATE_PARAM, null);
 
-        ResponseEntity<List<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        BorrowingSearchDto searchDto = new BorrowingSearchDto();
+        searchDto.setPageable(new PageableRequest(0,PAGE_SIZE));
+
+        ResponseEntity<ResponsePage<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(searchDto), responseTypePage, params);
 
         assertNotNull(response);
-        assertEquals(BORROWINGS_FILTER, response.getBody().size());
+        assertEquals(BORROWINGS_FILTER, response.getBody().getContent().size());
     }
 
     @Test
@@ -238,10 +253,13 @@ public class BorrowingIT {
         params.put(CLIENT_PARAM, null);
         params.put(DATE_PARAM, EXISTING_DATE);
 
-        ResponseEntity<List<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        BorrowingSearchDto searchDto = new BorrowingSearchDto();
+        searchDto.setPageable(new PageableRequest(0,PAGE_SIZE));
+
+        ResponseEntity<ResponsePage<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(searchDto), responseTypePage, params);
 
         assertNotNull(response);
-        assertEquals(BORROWINGS_FILTER, response.getBody().size());
+        assertEquals(BORROWINGS_FILTER, response.getBody().getContent().size());
     }
 
     @Test
@@ -253,10 +271,13 @@ public class BorrowingIT {
         params.put(CLIENT_PARAM, EXISTING_CLIENT_ID);
         params.put(DATE_PARAM, EXISTING_DATE);
 
-        ResponseEntity<List<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        BorrowingSearchDto searchDto = new BorrowingSearchDto();
+        searchDto.setPageable(new PageableRequest(0,PAGE_SIZE));
+
+        ResponseEntity<ResponsePage<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(searchDto), responseTypePage, params);
 
         assertNotNull(response);
-        assertEquals(BORROWINGS_FILTER, response.getBody().size());
+        assertEquals(BORROWINGS_FILTER, response.getBody().getContent().size());
     }
 
     @Test
@@ -268,10 +289,13 @@ public class BorrowingIT {
         params.put(CLIENT_PARAM, EXISTING_CLIENT_ID);
         params.put(DATE_PARAM, EXISTING_DATE);
 
-        ResponseEntity<List<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        BorrowingSearchDto searchDto = new BorrowingSearchDto();
+        searchDto.setPageable(new PageableRequest(0,PAGE_SIZE));
+
+        ResponseEntity<ResponsePage<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(searchDto), responseTypePage, params);
 
         assertNotNull(response);
-        assertEquals(BORROWINGS_FILTER, response.getBody().size());
+        assertEquals(BORROWINGS_FILTER, response.getBody().getContent().size());
     }
 
     @Test
@@ -283,10 +307,13 @@ public class BorrowingIT {
         params.put(CLIENT_PARAM, null);
         params.put(DATE_PARAM, null);
 
-        ResponseEntity<List<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        BorrowingSearchDto searchDto = new BorrowingSearchDto();
+        searchDto.setPageable(new PageableRequest(0,PAGE_SIZE));
+
+        ResponseEntity<ResponsePage<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(searchDto), responseTypePage, params);
 
         assertNotNull(response);
-        assertEquals(BORROWINGS_FILTER, response.getBody().size());
+        assertEquals(BORROWINGS_FILTER, response.getBody().getContent().size());
     }
 
     @Test
@@ -298,10 +325,13 @@ public class BorrowingIT {
         params.put(CLIENT_PARAM, NOT_EXISTS_CLIENT);
         params.put(DATE_PARAM, null);
 
-        ResponseEntity<List<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        BorrowingSearchDto searchDto = new BorrowingSearchDto();
+        searchDto.setPageable(new PageableRequest(0,PAGE_SIZE));
+
+        ResponseEntity<ResponsePage<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(searchDto), responseTypePage, params);
 
         assertNotNull(response);
-        assertEquals(BORROWINGS_FILTER, response.getBody().size());
+        assertEquals(BORROWINGS_FILTER, response.getBody().getContent().size());
     }
 
     @Test
@@ -313,10 +343,13 @@ public class BorrowingIT {
         params.put(CLIENT_PARAM, null);
         params.put(DATE_PARAM, NOT_EXISTS_DATE);
 
-        ResponseEntity<List<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.GET, null, responseType, params);
+        BorrowingSearchDto searchDto = new BorrowingSearchDto();
+        searchDto.setPageable(new PageableRequest(0,PAGE_SIZE));
+
+        ResponseEntity<ResponsePage<BorrowingDto>> response = restTemplate.exchange(getUrlWithParams(), HttpMethod.POST, new HttpEntity<>(searchDto), responseTypePage, params);
 
         assertNotNull(response);
-        assertEquals(BORROWINGS_FILTER, response.getBody().size());
+        assertEquals(BORROWINGS_FILTER, response.getBody().getContent().size());
     }
 
     @Test
@@ -334,7 +367,7 @@ public class BorrowingIT {
 
         ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.PUT, new HttpEntity<>(dto), Void.class);
 
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
@@ -352,7 +385,7 @@ public class BorrowingIT {
 
         ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.PUT, new HttpEntity<>(dto), Void.class);
 
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
@@ -370,7 +403,7 @@ public class BorrowingIT {
 
         ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.PUT, new HttpEntity<>(dto), Void.class);
 
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
@@ -388,7 +421,7 @@ public class BorrowingIT {
 
         ResponseEntity<?> response = restTemplate.exchange(LOCALHOST + port + SERVICE_PATH, HttpMethod.PUT, new HttpEntity<>(dto), Void.class);
 
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
 }

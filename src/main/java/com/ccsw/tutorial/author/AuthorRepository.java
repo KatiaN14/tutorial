@@ -1,9 +1,10 @@
 package com.ccsw.tutorial.author;
 
-import com.ccsw.tutorial.author.model.Author;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
+
+import com.ccsw.tutorial.author.model.Author;
 
 /**
  * @author ccsw

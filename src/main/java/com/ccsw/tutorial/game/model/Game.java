@@ -1,9 +1,9 @@
 package com.ccsw.tutorial.game.model;
 
+import jakarta.persistence.*;
+
 import com.ccsw.tutorial.author.model.Author;
 import com.ccsw.tutorial.category.model.Category;
-
-import jakarta.persistence.*;
 
 
 /**

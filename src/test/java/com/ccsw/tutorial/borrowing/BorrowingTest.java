@@ -1,6 +1,5 @@
 package com.ccsw.tutorial.borrowing;
 
-import com.ccsw.tutorial.borrowing.model.Borrowing;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,6 +11,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import com.ccsw.tutorial.borrowing.model.Borrowing;
 
 @ExtendWith(MockitoExtension.class)
 public class BorrowingTest {

@@ -1,8 +1,5 @@
 package com.ccsw.tutorial.author;
 
-import com.ccsw.tutorial.author.model.Author;
-import com.ccsw.tutorial.author.model.AuthorDto;
-import com.ccsw.tutorial.author.model.AuthorSearchDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
@@ -13,6 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.ccsw.tutorial.author.model.Author;
+import com.ccsw.tutorial.author.model.AuthorDto;
+import com.ccsw.tutorial.author.model.AuthorSearchDto;
 
 /**
  * @author ccsw

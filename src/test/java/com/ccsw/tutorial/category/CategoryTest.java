@@ -1,7 +1,5 @@
 package com.ccsw.tutorial.category;
 
-import com.ccsw.tutorial.category.model.Category;
-import com.ccsw.tutorial.category.model.CategoryDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -15,6 +13,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
+import com.ccsw.tutorial.category.model.Category;
+import com.ccsw.tutorial.category.model.CategoryDto;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoryTest {

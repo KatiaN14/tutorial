@@ -1,9 +1,5 @@
 package com.ccsw.tutorial.client;
 
-import com.ccsw.tutorial.client.ClientRepository;
-import com.ccsw.tutorial.client.ClientServiceImpl;
-import com.ccsw.tutorial.client.model.Client;
-import com.ccsw.tutorial.client.model.ClientDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -17,6 +13,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
+import com.ccsw.tutorial.client.model.Client;
+import com.ccsw.tutorial.client.model.ClientDto;
 
 @ExtendWith(MockitoExtension.class)
 public class ClientTest {

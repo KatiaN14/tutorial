@@ -1,24 +1,23 @@
 package com.ccsw.tutorial.borrowing;
 
-import com.ccsw.tutorial.borrowing.model.Borrowing;
-import com.ccsw.tutorial.borrowing.model.BorrowingDto;
-import com.ccsw.tutorial.borrowing.model.BorrowingSearchDto;
-import com.ccsw.tutorial.client.ClientRepository;
-import com.ccsw.tutorial.client.ClientService;
-import com.ccsw.tutorial.client.model.Client;
-import com.ccsw.tutorial.common.criteria.SearchCriteria;
-import com.ccsw.tutorial.game.GameRepository;
-import com.ccsw.tutorial.game.GameService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+
+import com.ccsw.tutorial.borrowing.model.Borrowing;
+import com.ccsw.tutorial.borrowing.model.BorrowingDto;
+import com.ccsw.tutorial.borrowing.model.BorrowingSearchDto;
+import com.ccsw.tutorial.client.ClientService;
+import com.ccsw.tutorial.common.criteria.SearchCriteria;
+import com.ccsw.tutorial.game.GameService;
 
 /**
  * @author KatiaN14
@@ -30,12 +29,6 @@ public class BorrowingServiceImpl implements BorrowingService {
 
     @Autowired
     BorrowingRepository borrowingRepository;
-
-    @Autowired
-    GameRepository gameRepository;
-
-    @Autowired
-    ClientRepository clientRepository;
 
     @Autowired
     GameService gameService;
@@ -78,18 +71,18 @@ public class BorrowingServiceImpl implements BorrowingService {
         Long clientId = dto.getClient().getId();
         Long days = ChronoUnit.DAYS.between(dto.getStartDate(), dto.getEndDate());
         if (days >= 14) {
-            throw new Exception("El préstamo no puede superar los 14 días");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El préstamo no puede superar los 14 días");
         }
         if (dto.getEndDate().isBefore(dto.getStartDate())) {
-            throw new Exception("La fecha del inicio no puede ser posterior a la de fin");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La fecha del inicio no puede ser posterior a la de fin");
         }
 
         if(this.borrowingRepository.existsByGameIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualAndIdNot(gameId, dto.getEndDate(), dto.getStartDate(), borrowingId)) {
-            throw new Exception("El juego ya está prestado en estas fechas");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El juego ya está prestado en estas fechas");
         }
 
         if(this.borrowingRepository.countByClientIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualAndIdNot(clientId, dto.getEndDate(), dto.getStartDate(), borrowingId) >= 2) {
-            throw new Exception ("El cliente ya tiene dos juegos prestados durante las fechas elegidas");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El cliente ya tiene dos juegos prestados durante las fechas elegidas");
         }
         if (id  == null) {
             borrowing = new Borrowing();
@@ -122,5 +115,13 @@ public class BorrowingServiceImpl implements BorrowingService {
     @Override
     public List<Borrowing> findAll() {
         return (List<Borrowing>) this.borrowingRepository.findAll();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean existsClient(Long clientId) {
+        return this.borrowingRepository.existsByClientId(clientId);
     }
 }

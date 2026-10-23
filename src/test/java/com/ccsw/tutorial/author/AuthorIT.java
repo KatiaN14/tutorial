@@ -1,9 +1,5 @@
 package com.ccsw.tutorial.author;
 
-import com.ccsw.tutorial.author.model.AuthorDto;
-import com.ccsw.tutorial.author.model.AuthorSearchDto;
-import com.ccsw.tutorial.common.pagination.PageableRequest;
-import com.ccsw.tutorial.config.ResponsePage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +13,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import com.ccsw.tutorial.author.model.AuthorDto;
+import com.ccsw.tutorial.author.model.AuthorSearchDto;
+import com.ccsw.tutorial.common.pagination.PageableRequest;
+import com.ccsw.tutorial.config.ResponsePage;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)

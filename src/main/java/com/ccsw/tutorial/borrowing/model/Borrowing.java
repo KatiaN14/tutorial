@@ -1,10 +1,11 @@
 package com.ccsw.tutorial.borrowing.model;
 
-import com.ccsw.tutorial.client.model.Client;
-import com.ccsw.tutorial.game.model.Game;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+
+import com.ccsw.tutorial.client.model.Client;
+import com.ccsw.tutorial.game.model.Game;
 
 /**
  * @author KatiaN14

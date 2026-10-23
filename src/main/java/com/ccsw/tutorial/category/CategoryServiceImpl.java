@@ -1,12 +1,17 @@
 package com.ccsw.tutorial.category;
 
-import com.ccsw.tutorial.category.model.Category;
-import com.ccsw.tutorial.category.model.CategoryDto;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+
+import com.ccsw.tutorial.category.model.Category;
+import com.ccsw.tutorial.category.model.CategoryDto;
+import com.ccsw.tutorial.game.GameService;
 
 /**
  * @author ccsw
@@ -18,6 +23,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     CategoryRepository categoryRepository;
+
+    @Autowired
+    @Lazy
+    GameService gameService;
 
     /**
      * {@inheritDoc}
@@ -64,6 +73,10 @@ public class CategoryServiceImpl implements CategoryService {
 
         if(this.get(id) == null){
             throw new Exception("Not exists");
+        }
+
+        if(this.gameService.existsCategory(id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "La categoría tiene juegos asociados y no se puede eliminar");
         }
 
         this.categoryRepository.deleteById(id);

@@ -1,6 +1,4 @@
 package com.ccsw.tutorial.client;
-
-import com.ccsw.tutorial.client.model.ClientDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;

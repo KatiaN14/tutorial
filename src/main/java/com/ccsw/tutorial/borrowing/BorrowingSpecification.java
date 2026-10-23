@@ -1,11 +1,12 @@
 package com.ccsw.tutorial.borrowing;
 
-import com.ccsw.tutorial.common.criteria.SearchCriteria;
-import com.ccsw.tutorial.borrowing.model.Borrowing;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
+
+import com.ccsw.tutorial.common.criteria.SearchCriteria;
+import com.ccsw.tutorial.borrowing.model.Borrowing;
 
 public class BorrowingSpecification implements Specification<Borrowing> {
     private static final long serialVersionUID = 1L;

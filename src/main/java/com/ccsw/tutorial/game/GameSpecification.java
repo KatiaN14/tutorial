@@ -1,10 +1,10 @@
 package com.ccsw.tutorial.game;
 
-import com.ccsw.tutorial.common.criteria.SearchCriteria;
-import com.ccsw.tutorial.game.model.Game;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
+import com.ccsw.tutorial.common.criteria.SearchCriteria;
+import com.ccsw.tutorial.game.model.Game;
 
 public class GameSpecification implements Specification<Game> {
 
